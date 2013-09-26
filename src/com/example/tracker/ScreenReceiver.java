@@ -6,18 +6,24 @@ import android.content.Intent;
 
 public class ScreenReceiver extends BroadcastReceiver {
 	
-	private boolean screenOn = false;
+	private boolean isScreenOn = true;
+	private boolean isUserPresent = true;
 	@Override
 	public void onReceive(Context arg0, Intent arg1) {
 		// TODO Auto-generated method stub
 		if(arg1.getAction().equals(Intent.ACTION_SCREEN_ON)) {
-			screenOn = true;
+			isScreenOn = true;
 		} else if (arg1.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-			screenOn = false;
+			isScreenOn = false;
+			isUserPresent = false;
+		} else if(arg1.getAction().equals(Intent.ACTION_USER_PRESENT)) {
+			isScreenOn = true;
+			isUserPresent = true;
 		}
-
+		
 		Intent trackerService = new Intent(arg0, TrackerService.class);
-		trackerService.putExtra("screen_state", screenOn);
+		trackerService.putExtra("isScreenOn", isScreenOn);
+		trackerService.putExtra("isUserPresent", isUserPresent);
 		arg0.startService(trackerService);
 	}
 	

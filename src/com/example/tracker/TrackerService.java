@@ -6,6 +6,8 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
+import android.content.IntentFilter;
+import android.content.BroadcastReceiver;
 
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
@@ -24,7 +26,33 @@ public class TrackerService extends Service {
 		// TODO Auto-generated method stub
 		super.onCreate();
 		Log.i(TAG, "Service onCreate: the number of processes is " + getTotalRunningApp());
+		IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
+		filter.addAction(Intent.ACTION_SCREEN_OFF);
+		filter.addAction(Intent.ACTION_USER_PRESENT);
+		BroadcastReceiver receiver = new ScreenReceiver();
+		registerReceiver(receiver, filter);
+	}
+	
+
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		// TODO Auto-generated method stub
+		boolean isScreenOn = intent.getBooleanExtra("isScreenOn", true);
+		boolean isUserPresent = intent.getBooleanExtra("isUserPresent", true);
 		
+		if(isScreenOn) {
+			Log.i(TAG, "Screen is on!");
+		} else {
+			Log.i(TAG, "Screen is off!");
+		}
+		
+		if(isUserPresent) {
+			Log.i(TAG, "User is present!");
+		} else {
+			Log.i(TAG, "User not present!");
+		}
+		
+		return super.onStartCommand(intent, flags, startId);
 	}
 
 	@Override
