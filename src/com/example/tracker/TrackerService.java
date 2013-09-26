@@ -34,7 +34,7 @@ public class TrackerService extends Service {
 		Log.i(TAG, "Service onDestroy");
 	}
 	
-	
+	/** Return the number of running processes right now */
 	public int getTotalRunningApp(){
 	    ActivityManager actvityManager = (ActivityManager) this.getSystemService( ACTIVITY_SERVICE );
 	    List<RunningAppProcessInfo> procInfos = actvityManager.getRunningAppProcesses();
