@@ -15,13 +15,18 @@ public class MainActivity extends Activity implements View.OnClickListener{
 	private Intent trackerService = null;
 	private Button startButton = null;
 	private Button stopButton = null;
+	
+	/** Flag to track the service status */
 	private boolean serviceStatus = false;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
     	Log.i(TAG, "onCreat() is called"); 
         super.onCreate(savedInstanceState);
+        
+        /** Create the Intent for trackerService */
         trackerService = new Intent(this, TrackerService.class);
+        
         setContentView(R.layout.activity_main);
         
         /** Bind the button listener here */
@@ -43,6 +48,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
+		
+		/** Ensure stop the trackerService */
 		if(serviceStatus == true) {
 			stopService(trackerService);
 			serviceStatus = false;
@@ -57,6 +64,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 		switch(arg0.getId()) {
 			case R.id.startbutton:
 				Log.i(TAG, "startbutton clicked.");
+				/** Start the trackerService */
 				if(serviceStatus == false) {
 					startService(trackerService);
 					serviceStatus = true;
@@ -64,6 +72,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 				break;
 			case R.id.stopbutton:
 				Log.i(TAG, "stopbuttion clicked.");
+				/** Stop the trackerService */
 				if(serviceStatus == true) {
 					stopService(trackerService);
 					serviceStatus = false;

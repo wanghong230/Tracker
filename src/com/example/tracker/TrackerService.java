@@ -1,9 +1,14 @@
 package com.example.tracker;
 
+import java.util.List;
+
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
+
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningAppProcessInfo;
 
 public class TrackerService extends Service {
 
@@ -18,7 +23,7 @@ public class TrackerService extends Service {
 	public void onCreate() {
 		// TODO Auto-generated method stub
 		super.onCreate();
-		Log.i(TAG, "Service onCreate");
+		Log.i(TAG, "Service onCreate: the number of processes is " + getTotalRunningApp());
 		
 	}
 
@@ -30,5 +35,9 @@ public class TrackerService extends Service {
 	}
 	
 	
-	
+	public int getTotalRunningApp(){
+	    ActivityManager actvityManager = (ActivityManager) this.getSystemService( ACTIVITY_SERVICE );
+	    List<RunningAppProcessInfo> procInfos = actvityManager.getRunningAppProcesses();
+	    return procInfos.size();
+	}
 }
