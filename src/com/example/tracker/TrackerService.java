@@ -15,6 +15,7 @@ import android.app.ActivityManager.RunningAppProcessInfo;
 public class TrackerService extends Service {
 
 	private String TAG = this.getClass().getSimpleName();
+	private BroadcastReceiver receiver = null;
 	@Override
 	public IBinder onBind(Intent arg0) {
 		// TODO Auto-generated method stub
@@ -29,7 +30,7 @@ public class TrackerService extends Service {
 		IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
 		filter.addAction(Intent.ACTION_SCREEN_OFF);
 		filter.addAction(Intent.ACTION_USER_PRESENT);
-		BroadcastReceiver receiver = new ScreenReceiver();
+		receiver = new ScreenReceiver();
 		registerReceiver(receiver, filter);
 	}
 	
@@ -58,6 +59,7 @@ public class TrackerService extends Service {
 	@Override
 	public void onDestroy() {
 		// TODO Auto-generated method stub
+		unregisterReceiver(receiver);
 		super.onDestroy();
 		Log.i(TAG, "Service onDestroy");
 	}
