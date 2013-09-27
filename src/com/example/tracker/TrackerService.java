@@ -12,14 +12,31 @@ import android.content.BroadcastReceiver;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
 
-public class TrackerService extends Service {
+import android.view.Gravity;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.WindowManager;
+import android.graphics.PixelFormat;
+
+import android.view.View.OnTouchListener;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
+
+
+
+public class TrackerService extends Service implements OnTouchListener{
 
 	private String TAG = this.getClass().getSimpleName();
 	private BroadcastReceiver receiver = null;
 	private boolean isScreenOn = false;
 	
+	private LinearLayout fakeLayout;
+	private WindowManager mWindowManager;
+	
 	/** UserPresent is more important to flag to start or stop to track the user behavior */
 	private boolean isUserPresent = false;
+	/** Keep the previous "RecentTaskList" to compare with latest one, 
+	 * if not match, some app has been opened */
 	private List<ActivityManager.RecentTaskInfo> recentTaskListPrevious = null;
 	
 	@Override
@@ -34,6 +51,24 @@ public class TrackerService extends Service {
 		super.onCreate();
 		Log.i(TAG, "Service onCreate: the number of processes is " + getTotalRunningApp());
 		
+		fakeLayout = new LinearLayout(this);
+		LayoutParams layoutPrams = new LayoutParams(1, LayoutParams.MATCH_PARENT);
+		fakeLayout.setLayoutParams(layoutPrams);
+		fakeLayout.setOnTouchListener(this);
+		
+		mWindowManager = (WindowManager)getSystemService(WINDOW_SERVICE);
+
+		
+		WindowManager.LayoutParams params = new WindowManager.LayoutParams(
+				1,
+				WindowManager.LayoutParams.MATCH_PARENT,
+				WindowManager.LayoutParams.TYPE_PHONE,
+				WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
+                PixelFormat.TRANSLUCENT);
+		params.gravity = Gravity.LEFT | Gravity.TOP;
+		
+		mWindowManager.addView(fakeLayout, params);
+		
 		ActivityManager actvityManager = (ActivityManager) this.getSystemService( ACTIVITY_SERVICE );
 		recentTaskListPrevious = actvityManager.getRecentTasks(10, ActivityManager.RECENT_IGNORE_UNAVAILABLE);
 		
@@ -45,6 +80,8 @@ public class TrackerService extends Service {
 		receiver = new ScreenReceiver();
 		/** Register the Broadcast Receiver to make it work */
 		registerReceiver(receiver, filter);
+		
+		
 	}
 	
 
@@ -88,6 +125,16 @@ public class TrackerService extends Service {
 		Log.i(TAG, "Service onDestroy.");
 	}
 	
+	
+	@Override
+	public boolean onTouch(View arg0, MotionEvent arg1) {
+		// TODO Auto-generated method stub
+		if(arg1.getAction() ==  MotionEvent.ACTION_OUTSIDE) {
+			Log.i(TAG, "Recorded Touch Outside the view.");
+		}
+		return true;
+	}
+
 	/** Return the number of running processes right now */
 	public int getTotalRunningApp() {
 	    ActivityManager actvityManager = (ActivityManager) this.getSystemService( ACTIVITY_SERVICE );
@@ -96,10 +143,14 @@ public class TrackerService extends Service {
 	}
 	
 	public boolean isAppStatusChanged() {
+		/** Get latest recentTaskList */
 		ActivityManager actvityManager = (ActivityManager) this.getSystemService( ACTIVITY_SERVICE );
 		List<ActivityManager.RecentTaskInfo> recentTaskList = actvityManager.getRecentTasks(10, ActivityManager.RECENT_IGNORE_UNAVAILABLE);
+		/** Compare the recentTaskList with previous */
+		/** Need to be optimized in the future */
 		for(int i = 0; i < recentTaskList.size(); i++) {
 			ActivityManager.RecentTaskInfo recent = recentTaskList.get(i);
+			/** Double check the list size, two list may not have the same size */
 			if(i < recentTaskListPrevious.size()) {
 				ActivityManager.RecentTaskInfo previous = recentTaskListPrevious.get(i);
 				if(recent.persistentId != previous.persistentId) {
