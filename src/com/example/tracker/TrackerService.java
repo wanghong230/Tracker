@@ -23,8 +23,6 @@ import android.view.View.OnTouchListener;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 
-
-
 public class TrackerService extends Service implements OnTouchListener{
 
 	private String TAG = this.getClass().getSimpleName();
@@ -137,6 +135,9 @@ public class TrackerService extends Service implements OnTouchListener{
 	@Override
 	public boolean onTouch(View arg0, MotionEvent arg1) {
 		// TODO Auto-generated method stub
+		/** Delay 1 second to check the app status
+		 * give application sometime to bring up or move to the front
+		 */
 		if(arg1.getAction() ==  MotionEvent.ACTION_OUTSIDE) {
 		    Handler handler = new Handler(); 
 		    handler.postDelayed(new Runnable() { 
@@ -159,7 +160,7 @@ public class TrackerService extends Service implements OnTouchListener{
 	public boolean isAppStatusChanged() {
 		/** Get latest recentTaskList */
 		ActivityManager actvityManager = (ActivityManager) this.getSystemService( ACTIVITY_SERVICE );
-		List<ActivityManager.RecentTaskInfo> recentTaskList = actvityManager.getRecentTasks(10, ActivityManager.RECENT_IGNORE_UNAVAILABLE);
+		List<ActivityManager.RecentTaskInfo> recentTaskList = actvityManager.getRecentTasks(5, ActivityManager.RECENT_IGNORE_UNAVAILABLE);
 		/** Compare the recentTaskList with previous */
 		/** Need to be optimized in the future */
 		for(int i = 0; i < recentTaskList.size(); i++) {
