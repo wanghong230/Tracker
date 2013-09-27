@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 import android.content.IntentFilter;
@@ -138,8 +139,14 @@ public class TrackerService extends Service implements OnTouchListener{
 	public boolean onTouch(View arg0, MotionEvent arg1) {
 		// TODO Auto-generated method stub
 		if(arg1.getAction() ==  MotionEvent.ACTION_OUTSIDE) {
-			Log.i(TAG, "Recorded Touch Outside the view.");
-			Log.i(TAG, "App Status Changed:" + isAppStatusChanged());
+			Log.i(TAG, System.nanoTime() + "Recorded Touch Outside the view.");
+		    Handler handler = new Handler(); 
+		    handler.postDelayed(new Runnable() { 
+		         public void run() { 
+		        	 Log.i(TAG, "App Status Changed:" + isAppStatusChanged()); 
+		         } 
+		    }, 1000); 
+			
 		}
 		return true;
 	}
@@ -159,15 +166,20 @@ public class TrackerService extends Service implements OnTouchListener{
 		/** Need to be optimized in the future */
 		for(int i = 0; i < recentTaskList.size(); i++) {
 			ActivityManager.RecentTaskInfo recent = recentTaskList.get(i);
+			
+			if(i == 0 && recent.persistentId == 2) {
+				recentTaskListPrevious = recentTaskList;
+				return false;
+			}
 			/** Double check the list size, two list may not have the same size */
 			if(i < recentTaskListPrevious.size()) {
 				ActivityManager.RecentTaskInfo previous = recentTaskListPrevious.get(i);
+				Log.i(TAG, "Recent " + i + ":" + recent.persistentId);
+				Log.i(TAG, "Previs " + i + ":" + previous.persistentId);
 				if(recent.persistentId != previous.persistentId) {
 					recentTaskListPrevious = recentTaskList;
 					return true;
 				}
-				Log.i(TAG, "Recent " + i + ":" + recent.persistentId);
-				Log.i(TAG, "Previs " + i + ":" + previous.persistentId);
 			} else {
 				recentTaskListPrevious = recentTaskList;
 				return true;
