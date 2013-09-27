@@ -23,9 +23,12 @@ import android.view.View.OnTouchListener;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 
+import android.provider.Settings.Secure;
+
 public class TrackerService extends Service implements OnTouchListener{
 
 	private String TAG = this.getClass().getSimpleName();
+	private String deviceID = null;
 	private BroadcastReceiver receiver = null;
 	private boolean isScreenOn = false;
 	
@@ -48,6 +51,8 @@ public class TrackerService extends Service implements OnTouchListener{
 	public void onCreate() {
 		// TODO Auto-generated method stub
 		super.onCreate();
+		deviceID = Secure.getString(this.getContentResolver(), Secure.ANDROID_ID);
+		Log.i(TAG, "DeviceID:" + deviceID);
 		Log.i(TAG, "Service onCreate: the number of processes is " + getTotalRunningApp());
 		
 		/** Create and configure the fake layout for service */
@@ -61,7 +66,7 @@ public class TrackerService extends Service implements OnTouchListener{
 		WindowManager.LayoutParams params = new WindowManager.LayoutParams(
 				0,
 				WindowManager.LayoutParams.MATCH_PARENT,
-				WindowManager.LayoutParams.TYPE_PHONE,
+				WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
 				WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
                 PixelFormat.TRANSLUCENT);
 		params.gravity = Gravity.LEFT | Gravity.TOP;
