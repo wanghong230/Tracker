@@ -51,24 +51,24 @@ public class TrackerService extends Service implements OnTouchListener{
 		super.onCreate();
 		Log.i(TAG, "Service onCreate: the number of processes is " + getTotalRunningApp());
 		
+		/** Create and configure the fake layout for service */
 		fakeLayout = new LinearLayout(this);
-		LayoutParams layoutPrams = new LayoutParams(1, LayoutParams.MATCH_PARENT);
+		LayoutParams layoutPrams = new LayoutParams(0, LayoutParams.MATCH_PARENT);
 		fakeLayout.setLayoutParams(layoutPrams);
 		fakeLayout.setOnTouchListener(this);
 		
+		/** Fetch WindowManager and add fake layout to it */
 		mWindowManager = (WindowManager)getSystemService(WINDOW_SERVICE);
-
-		
 		WindowManager.LayoutParams params = new WindowManager.LayoutParams(
-				1,
+				0,
 				WindowManager.LayoutParams.MATCH_PARENT,
 				WindowManager.LayoutParams.TYPE_PHONE,
 				WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
                 PixelFormat.TRANSLUCENT);
 		params.gravity = Gravity.LEFT | Gravity.TOP;
-		
 		mWindowManager.addView(fakeLayout, params);
 		
+		/** Initialize the recentTaskListPrevious */
 		ActivityManager actvityManager = (ActivityManager) this.getSystemService( ACTIVITY_SERVICE );
 		recentTaskListPrevious = actvityManager.getRecentTasks(10, ActivityManager.RECENT_IGNORE_UNAVAILABLE);
 		
@@ -77,14 +77,11 @@ public class TrackerService extends Service implements OnTouchListener{
 		filter.addAction(Intent.ACTION_SCREEN_OFF);
 		filter.addAction(Intent.ACTION_USER_PRESENT);
 		
-		receiver = new ScreenReceiver();
 		/** Register the Broadcast Receiver to make it work */
-		registerReceiver(receiver, filter);
-		
-		
+		receiver = new ScreenReceiver();
+		registerReceiver(receiver, filter);	
 	}
 	
-
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		// TODO Auto-generated method stub
@@ -107,11 +104,15 @@ public class TrackerService extends Service implements OnTouchListener{
 		
 		if(isUserPresent) {
 			Log.i(TAG, "User is present!");
+			/** Start the tracking */
+			
+			
 		} else {
 			Log.i(TAG, "User not present!");
+			/** Stop the tracking */
+			
+			
 		}
-		Log.i(TAG, "App Status Changed:" + isAppStatusChanged());
-		
 		return super.onStartCommand(intent, flags, startId);
 	}
 
@@ -120,6 +121,13 @@ public class TrackerService extends Service implements OnTouchListener{
 		// TODO Auto-generated method stub
 		/** Before destroy to unregister the Broadcast Receiver first(Avoid memory leak)*/
 		unregisterReceiver(receiver);
+		
+		if(mWindowManager != null) {
+			if(fakeLayout != null) {
+				mWindowManager.removeView(fakeLayout);
+			}
+		}
+		
 		Log.i(TAG, "Boardcast Receiver Unregistered.");
 		super.onDestroy();
 		Log.i(TAG, "Service onDestroy.");
