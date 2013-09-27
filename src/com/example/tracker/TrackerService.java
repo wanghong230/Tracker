@@ -131,6 +131,7 @@ public class TrackerService extends Service implements OnTouchListener{
 		// TODO Auto-generated method stub
 		if(arg1.getAction() ==  MotionEvent.ACTION_OUTSIDE) {
 			Log.i(TAG, "Recorded Touch Outside the view.");
+			Log.i(TAG, "App Status Changed:" + isAppStatusChanged());
 		}
 		return true;
 	}
