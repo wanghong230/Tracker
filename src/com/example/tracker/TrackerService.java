@@ -144,6 +144,10 @@ public class TrackerService extends Service implements OnTouchListener{
 		 * give application sometime to bring up or move to the front
 		 */
 		if(arg1.getAction() ==  MotionEvent.ACTION_OUTSIDE) {
+			/** Log the raw touch location data */
+			/** Test Result: always return (0,0), so gesture detection is not possible */
+			//Log.i(TAG, Float.toString(arg1.getRawX()));
+			//Log.i(TAG, Float.toString(arg1.getRawY()));
 		    Handler handler = new Handler(); 
 		    handler.postDelayed(new Runnable() { 
 		         public void run() { 
@@ -175,6 +179,7 @@ public class TrackerService extends Service implements OnTouchListener{
 				recentTaskListPrevious = recentTaskList;
 				return false;
 			}
+			
 			/** Double check the list size, two list may not have the same size */
 			if(i < recentTaskListPrevious.size()) {
 				ActivityManager.RecentTaskInfo previous = recentTaskListPrevious.get(i);
