@@ -20,6 +20,7 @@ public class TrackerService extends Service {
 	
 	/** UserPresent is more important to flag to start or stop to track the user behavior */
 	private boolean isUserPresent = false;
+	private List<ActivityManager.RecentTaskInfo> recentTaskListPrevious = null;
 	
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -32,6 +33,9 @@ public class TrackerService extends Service {
 		// TODO Auto-generated method stub
 		super.onCreate();
 		Log.i(TAG, "Service onCreate: the number of processes is " + getTotalRunningApp());
+		
+		ActivityManager actvityManager = (ActivityManager) this.getSystemService( ACTIVITY_SERVICE );
+		recentTaskListPrevious = actvityManager.getRecentTasks(10, ActivityManager.RECENT_IGNORE_UNAVAILABLE);
 		
 		/** Create the filter to contain three Actions: ScreenOn, ScreenOff, UserPresent */
 		IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
@@ -69,6 +73,7 @@ public class TrackerService extends Service {
 		} else {
 			Log.i(TAG, "User not present!");
 		}
+		Log.i(TAG, "App Status Changed:" + isAppStatusChanged());
 		
 		return super.onStartCommand(intent, flags, startId);
 	}
@@ -84,9 +89,30 @@ public class TrackerService extends Service {
 	}
 	
 	/** Return the number of running processes right now */
-	public int getTotalRunningApp(){
+	public int getTotalRunningApp() {
 	    ActivityManager actvityManager = (ActivityManager) this.getSystemService( ACTIVITY_SERVICE );
 	    List<RunningAppProcessInfo> procInfos = actvityManager.getRunningAppProcesses();
 	    return procInfos.size();
+	}
+	
+	public boolean isAppStatusChanged() {
+		ActivityManager actvityManager = (ActivityManager) this.getSystemService( ACTIVITY_SERVICE );
+		List<ActivityManager.RecentTaskInfo> recentTaskList = actvityManager.getRecentTasks(10, ActivityManager.RECENT_IGNORE_UNAVAILABLE);
+		for(int i = 0; i < recentTaskList.size(); i++) {
+			ActivityManager.RecentTaskInfo recent = recentTaskList.get(i);
+			if(i < recentTaskListPrevious.size()) {
+				ActivityManager.RecentTaskInfo previous = recentTaskListPrevious.get(i);
+				if(recent.persistentId != previous.persistentId) {
+					recentTaskListPrevious = recentTaskList;
+					return true;
+				}
+				Log.i(TAG, "Recent " + i + ":" + recent.persistentId);
+				Log.i(TAG, "Previs " + i + ":" + previous.persistentId);
+			} else {
+				recentTaskListPrevious = recentTaskList;
+				return true;
+			}
+		}	
+		return false;	
 	}
 }
