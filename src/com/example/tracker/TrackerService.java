@@ -38,7 +38,7 @@ public class TrackerService extends Service implements OnTouchListener{
 	/** UserPresent is more important to flag to start or stop to track the user behavior */
 	private boolean isUserPresent = false;
 	/** Keep the previous "RecentTaskList" to compare with latest one, 
-	 * if not match, some app has been opened */
+	 * if not match, one application has been opened */
 	private List<ActivityManager.RecentTaskInfo> recentTaskListPrevious = null;
 	
 	@Override
@@ -114,8 +114,6 @@ public class TrackerService extends Service implements OnTouchListener{
 		} else {
 			Log.i(TAG, "User not present!");
 			/** Stop the tracking */
-			
-			
 		}
 		return super.onStartCommand(intent, flags, startId);
 	}
