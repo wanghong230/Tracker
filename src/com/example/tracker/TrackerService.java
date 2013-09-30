@@ -102,17 +102,19 @@ public class TrackerService extends Service implements OnTouchListener{
 		
 		if(isScreenOn) {
 			Log.i(TAG, "Screen is on!");
+			AggregateMessages.addMessages("Screen is on!");
 		} else {
 			Log.i(TAG, "Screen is off!");
+			AggregateMessages.addMessages("Screen is off!");
 		}
 		
 		if(isUserPresent) {
 			Log.i(TAG, "User is present!");
+			AggregateMessages.addMessages("User is present!");
 			/** Start the tracking */
-			
-			
 		} else {
 			Log.i(TAG, "User not present!");
+			AggregateMessages.addMessages("User not present!");
 			/** Stop the tracking */
 		}
 		return super.onStartCommand(intent, flags, startId);
@@ -138,7 +140,7 @@ public class TrackerService extends Service implements OnTouchListener{
 	@Override
 	public boolean onTouch(View arg0, MotionEvent arg1) {
 		// TODO Auto-generated method stub
-		/** Delay 1 second to check the app status
+		/** Delay 1 second to check the application status
 		 * give application sometime to bring up or move to the front
 		 */
 		if(arg1.getAction() ==  MotionEvent.ACTION_OUTSIDE) {
@@ -149,8 +151,10 @@ public class TrackerService extends Service implements OnTouchListener{
 		    Handler handler = new Handler(); 
 		    handler.postDelayed(new Runnable() { 
 		         public void run() { 
+		        	 boolean statusChanged = isAppStatusChanged();
 		        	 Log.i(TAG, "Recorded Touch Outside the view.");
-		        	 Log.i(TAG, "TimeStamp:" + System.nanoTime() + "  App Status Changed:" + isAppStatusChanged()); 
+		        	 Log.i(TAG, "TimeStamp: " + System.nanoTime() + "  App_Status_Changed:" + statusChanged); 
+		        	 AggregateMessages.addMessages("TimeStamp: " + System.nanoTime() + "  App_Status_Changed:" + statusChanged);
 		         } 
 		    }, 1000); 
 		}
@@ -193,5 +197,10 @@ public class TrackerService extends Service implements OnTouchListener{
 			}
 		}	
 		return false;	
+	}
+	
+	public void updateRecentTaskListPrevious() {
+		ActivityManager actvityManager = (ActivityManager) this.getSystemService( ACTIVITY_SERVICE );
+		recentTaskListPrevious = actvityManager.getRecentTasks(5, ActivityManager.RECENT_IGNORE_UNAVAILABLE);		
 	}
 }

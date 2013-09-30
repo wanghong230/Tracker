@@ -3,8 +3,11 @@ package com.example.tracker;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 public class ScreenReceiver extends BroadcastReceiver {
+	
+	private String TAG = this.getClass().getSimpleName();
 	
 	private boolean isScreenOn = true;
 	private boolean isUserPresent = true;
@@ -16,9 +19,16 @@ public class ScreenReceiver extends BroadcastReceiver {
 		} else if (arg1.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
 			isScreenOn = false;
 			isUserPresent = false;
+			
+			/** Send aggregated messages to server here */
+			Log.w(TAG, AggregateMessages.getMessages());
+			AggregateMessages.cleanMessages();
 		} else if(arg1.getAction().equals(Intent.ACTION_USER_PRESENT)) {
 			isScreenOn = true;
 			isUserPresent = true;
+			
+			/** Clean the messages */
+			AggregateMessages.cleanMessages();
 		}
 		
 		Intent trackerService = new Intent(arg0, TrackerService.class);
@@ -26,5 +36,4 @@ public class ScreenReceiver extends BroadcastReceiver {
 		trackerService.putExtra("isUserPresent", isUserPresent);
 		arg0.startService(trackerService);
 	}
-	
 }
