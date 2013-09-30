@@ -41,6 +41,8 @@ public class TrackerService extends Service implements OnTouchListener{
 	 * if not match, one application has been opened */
 	private List<ActivityManager.RecentTaskInfo> recentTaskListPrevious = null;
 	
+	private SystemStatus previousStatus = SystemStatus.INAPPLICATION;
+	
 	@Override
 	public IBinder onBind(Intent arg0) {
 		// TODO Auto-generated method stub
@@ -73,8 +75,8 @@ public class TrackerService extends Service implements OnTouchListener{
 		mWindowManager.addView(fakeLayout, params);
 		
 		/** Initialize the recentTaskListPrevious */
-		ActivityManager actvityManager = (ActivityManager) this.getSystemService( ACTIVITY_SERVICE );
-		recentTaskListPrevious = actvityManager.getRecentTasks(10, ActivityManager.RECENT_IGNORE_UNAVAILABLE);
+		updateRecentTaskListPrevious();
+		previousStatus = SystemStatus.INAPPLICATION;
 		
 		/** Create the filter to contain three Actions: ScreenOn, ScreenOff, UserPresent */
 		IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
@@ -151,10 +153,10 @@ public class TrackerService extends Service implements OnTouchListener{
 		    Handler handler = new Handler(); 
 		    handler.postDelayed(new Runnable() { 
 		         public void run() { 
-		        	 boolean statusChanged = isAppStatusChanged();
+		        	 SystemStatus status = trackStatus();
 		        	 Log.i(TAG, "Recorded Touch Outside the view.");
-		        	 Log.i(TAG, "TimeStamp: " + System.nanoTime() + "  App_Status_Changed:" + statusChanged); 
-		        	 AggregateMessages.addMessages("TimeStamp: " + System.nanoTime() + "  App_Status_Changed:" + statusChanged);
+		        	 Log.i(TAG, "TimeStamp: " + System.nanoTime() + "  Sys_Status:" + status); 
+		        	 AggregateMessages.addMessages("TimeStamp: " + System.nanoTime() + "  Sys_Status:" + status);
 		         } 
 		    }, 1000); 
 		}
@@ -168,7 +170,7 @@ public class TrackerService extends Service implements OnTouchListener{
 	    return procInfos.size();
 	}
 	
-	public boolean isAppStatusChanged() {
+	public SystemStatus trackStatus() {
 		/** Get latest recentTaskList */
 		ActivityManager actvityManager = (ActivityManager) this.getSystemService( ACTIVITY_SERVICE );
 		List<ActivityManager.RecentTaskInfo> recentTaskList = actvityManager.getRecentTasks(5, ActivityManager.RECENT_IGNORE_UNAVAILABLE);
@@ -176,27 +178,53 @@ public class TrackerService extends Service implements OnTouchListener{
 		/** Need to be optimized in the future */
 		for(int i = 0; i < recentTaskList.size(); i++) {
 			ActivityManager.RecentTaskInfo recent = recentTaskList.get(i);
-			
-			if(i == 0 && recent.persistentId == 2) {
-				recentTaskListPrevious = recentTaskList;
-				return false;
-			}
-			
-			/** Double check the list size, two list may not have the same size */
-			if(i < recentTaskListPrevious.size()) {
+			/** Check the very first process */
+			if(i == 0) {
 				ActivityManager.RecentTaskInfo previous = recentTaskListPrevious.get(i);
-				//Log.i(TAG, "Recent " + i + ":" + recent.persistentId);
-				//Log.i(TAG, "Previs " + i + ":" + previous.persistentId);
-				if(recent.persistentId != previous.persistentId) {
-					recentTaskListPrevious = recentTaskList;
-					return true;
+				if(recent.persistentId == 2) {
+					if(previousStatus == SystemStatus.INAPPLICATION) {
+						previousStatus = SystemStatus.MAINMENU;
+						recentTaskListPrevious = recentTaskList;
+						return SystemStatus.SWITCH;
+					} else {
+						previousStatus = SystemStatus.MAINMENU;
+						recentTaskListPrevious = recentTaskList;
+						return SystemStatus.MAINMENU;
+					}
+				} else {
+					if(previousStatus == SystemStatus.MAINMENU) {
+						previousStatus = SystemStatus.INAPPLICATION;
+						recentTaskListPrevious = recentTaskList;
+						return SystemStatus.SWITCH;						
+					} else if(previousStatus == SystemStatus.INAPPLICATION) {
+						if(recent.persistentId == previous.persistentId) {
+							previousStatus = SystemStatus.INAPPLICATION;
+							recentTaskListPrevious = recentTaskList;
+							return SystemStatus.INAPPLICATION;	
+						} else {
+							previousStatus = SystemStatus.INAPPLICATION;
+							recentTaskListPrevious = recentTaskList;
+							return SystemStatus.SWITCH;
+						}
+					}
 				}
-			} else {
-				recentTaskListPrevious = recentTaskList;
-				return true;
 			}
+			
+//			/** Double check the list size, two list may not have the same size */
+//			if(i < recentTaskListPrevious.size()) {
+//				ActivityManager.RecentTaskInfo previous = recentTaskListPrevious.get(i);
+//				//Log.i(TAG, "Recent " + i + ":" + recent.persistentId);
+//				//Log.i(TAG, "Previs " + i + ":" + previous.persistentId);
+//				if(recent.persistentId != previous.persistentId) {
+//					recentTaskListPrevious = recentTaskList;
+//					return true;
+//				}
+//			} else {
+//				recentTaskListPrevious = recentTaskList;
+//				return true;
+//			}
 		}	
-		return false;	
+		return SystemStatus.ERROR;	
 	}
 	
 	public void updateRecentTaskListPrevious() {
