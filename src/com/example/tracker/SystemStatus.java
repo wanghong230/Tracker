@@ -2,9 +2,9 @@ package com.example.tracker;
 
 public enum SystemStatus {
 	
-	MAINMENU("MainMenu"),
-	INAPPLICATION("InApplication"),
-	SWITCH("Switch"),
+	MAINM("MainMenu"),
+	INAPP("InApplication"),
+	SWICH("Switch"),
 	ERROR("Error");
 	
 	private String statusCode;

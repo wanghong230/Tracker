@@ -13,20 +13,20 @@ public class ScreenReceiver extends BroadcastReceiver {
 	private boolean isUserPresent = true;
 	@Override
 	public void onReceive(Context arg0, Intent arg1) {
+		
 		// TODO Auto-generated method stub
 		if(arg1.getAction().equals(Intent.ACTION_SCREEN_ON)) {
 			isScreenOn = true;
 		} else if (arg1.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
 			isScreenOn = false;
 			isUserPresent = false;
-			
+			AggregateMessages.addMessages("Screen is off!");
 			/** Send aggregated messages to server here */
 			Log.w(TAG, AggregateMessages.getMessages());
 			AggregateMessages.cleanMessages();
 		} else if(arg1.getAction().equals(Intent.ACTION_USER_PRESENT)) {
 			isScreenOn = true;
 			isUserPresent = true;
-			
 			/** Clean the messages */
 			AggregateMessages.cleanMessages();
 		}

@@ -41,7 +41,7 @@ public class TrackerService extends Service implements OnTouchListener{
 	 * if not match, one application has been opened */
 	private List<ActivityManager.RecentTaskInfo> recentTaskListPrevious = null;
 	
-	private SystemStatus previousStatus = SystemStatus.INAPPLICATION;
+	private SystemStatus previousStatus = SystemStatus.INAPP;
 	
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -76,7 +76,7 @@ public class TrackerService extends Service implements OnTouchListener{
 		
 		/** Initialize the recentTaskListPrevious */
 		updateRecentTaskListPrevious();
-		previousStatus = SystemStatus.INAPPLICATION;
+		previousStatus = SystemStatus.INAPP;
 		
 		/** Create the filter to contain three Actions: ScreenOn, ScreenOff, UserPresent */
 		IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
@@ -107,7 +107,6 @@ public class TrackerService extends Service implements OnTouchListener{
 			AggregateMessages.addMessages("Screen is on!");
 		} else {
 			Log.i(TAG, "Screen is off!");
-			AggregateMessages.addMessages("Screen is off!");
 		}
 		
 		if(isUserPresent) {
@@ -182,29 +181,29 @@ public class TrackerService extends Service implements OnTouchListener{
 			if(i == 0) {
 				ActivityManager.RecentTaskInfo previous = recentTaskListPrevious.get(i);
 				if(recent.persistentId == 2) {
-					if(previousStatus == SystemStatus.INAPPLICATION) {
-						previousStatus = SystemStatus.MAINMENU;
+					if(previousStatus == SystemStatus.INAPP) {
+						previousStatus = SystemStatus.MAINM;
 						recentTaskListPrevious = recentTaskList;
-						return SystemStatus.SWITCH;
+						return SystemStatus.SWICH;
 					} else {
-						previousStatus = SystemStatus.MAINMENU;
+						previousStatus = SystemStatus.MAINM;
 						recentTaskListPrevious = recentTaskList;
-						return SystemStatus.MAINMENU;
+						return SystemStatus.MAINM;
 					}
 				} else {
-					if(previousStatus == SystemStatus.MAINMENU) {
-						previousStatus = SystemStatus.INAPPLICATION;
+					if(previousStatus == SystemStatus.MAINM) {
+						previousStatus = SystemStatus.INAPP;
 						recentTaskListPrevious = recentTaskList;
-						return SystemStatus.SWITCH;						
-					} else if(previousStatus == SystemStatus.INAPPLICATION) {
+						return SystemStatus.SWICH;						
+					} else if(previousStatus == SystemStatus.INAPP) {
 						if(recent.persistentId == previous.persistentId) {
-							previousStatus = SystemStatus.INAPPLICATION;
+							previousStatus = SystemStatus.INAPP;
 							recentTaskListPrevious = recentTaskList;
-							return SystemStatus.INAPPLICATION;	
+							return SystemStatus.INAPP;	
 						} else {
-							previousStatus = SystemStatus.INAPPLICATION;
+							previousStatus = SystemStatus.INAPP;
 							recentTaskListPrevious = recentTaskList;
-							return SystemStatus.SWITCH;
+							return SystemStatus.SWICH;
 						}
 					}
 				}
