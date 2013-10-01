@@ -104,18 +104,19 @@ public class TrackerService extends Service implements OnTouchListener{
 		
 		if(isScreenOn) {
 			Log.i(TAG, "Screen is on!");
-			AggregateMessages.addMessages("Screen is on!");
+//			AggregateMessages.addMessages("Screen is on!");
 		} else {
 			Log.i(TAG, "Screen is off!");
 		}
 		
 		if(isUserPresent) {
 			Log.i(TAG, "User is present!");
+			AggregateMessages.addMessages(deviceID);
 			AggregateMessages.addMessages("User is present!");
 			/** Start the tracking */
 		} else {
 			Log.i(TAG, "User not present!");
-			AggregateMessages.addMessages("User not present!");
+//			AggregateMessages.addMessages("User not present!");
 			/** Stop the tracking */
 		}
 		return super.onStartCommand(intent, flags, startId);
@@ -184,7 +185,7 @@ public class TrackerService extends Service implements OnTouchListener{
 					if(previousStatus == SystemStatus.INAPP) {
 						previousStatus = SystemStatus.MAINM;
 						recentTaskListPrevious = recentTaskList;
-						return SystemStatus.SWICH;
+						return SystemStatus.SWMAN;
 					} else {
 						previousStatus = SystemStatus.MAINM;
 						recentTaskListPrevious = recentTaskList;
@@ -194,7 +195,7 @@ public class TrackerService extends Service implements OnTouchListener{
 					if(previousStatus == SystemStatus.MAINM) {
 						previousStatus = SystemStatus.INAPP;
 						recentTaskListPrevious = recentTaskList;
-						return SystemStatus.SWICH;						
+						return SystemStatus.SWAPP;						
 					} else if(previousStatus == SystemStatus.INAPP) {
 						if(recent.persistentId == previous.persistentId) {
 							previousStatus = SystemStatus.INAPP;
@@ -203,25 +204,11 @@ public class TrackerService extends Service implements OnTouchListener{
 						} else {
 							previousStatus = SystemStatus.INAPP;
 							recentTaskListPrevious = recentTaskList;
-							return SystemStatus.SWICH;
+							return SystemStatus.SWAPP;
 						}
 					}
 				}
 			}
-			
-//			/** Double check the list size, two list may not have the same size */
-//			if(i < recentTaskListPrevious.size()) {
-//				ActivityManager.RecentTaskInfo previous = recentTaskListPrevious.get(i);
-//				//Log.i(TAG, "Recent " + i + ":" + recent.persistentId);
-//				//Log.i(TAG, "Previs " + i + ":" + previous.persistentId);
-//				if(recent.persistentId != previous.persistentId) {
-//					recentTaskListPrevious = recentTaskList;
-//					return true;
-//				}
-//			} else {
-//				recentTaskListPrevious = recentTaskList;
-//				return true;
-//			}
 		}	
 		return SystemStatus.ERROR;	
 	}

@@ -4,7 +4,8 @@ public enum SystemStatus {
 	
 	MAINM("MainMenu"),
 	INAPP("InApplication"),
-	SWICH("Switch"),
+	SWAPP("SwitchToApp"),
+	SWMAN("SwitchToMain"),
 	ERROR("Error");
 	
 	private String statusCode;
