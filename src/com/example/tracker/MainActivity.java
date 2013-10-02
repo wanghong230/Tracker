@@ -53,12 +53,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
-		
 		/** Ensure stop the trackerService */
-		if(serviceStatus == true) {
-			stopService(trackerService);
-			serviceStatus = false;
-		}
+		stopService(trackerService);
 		super.onDestroy();
 	}
 
@@ -75,11 +71,11 @@ public class MainActivity extends Activity implements View.OnClickListener{
 					serviceStatus = true;
 				}
 				
-				ArrayList<String> list = new ArrayList<String>();
-				list.add("bc6ef7035ddb4763");
-				list.add("aaaaaaaa");
-				String ipAddress = "10.0.2.2";
-				new TestClient(ipAddress, list);
+//				ArrayList<String> list = new ArrayList<String>();
+//				list.add("bc6ef7035ddb4763");
+//				list.add("aaaaaaaa");
+//				String ipAddress = "10.0.2.2";
+//				new TestClient(ipAddress, list);
 				
 				break;
 			case R.id.stopbutton:

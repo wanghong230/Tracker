@@ -181,7 +181,11 @@ public class TrackerService extends Service implements OnTouchListener{
 			/** Check the very first process */
 			if(i == 0) {
 				ActivityManager.RecentTaskInfo previous = recentTaskListPrevious.get(i);
-				if(recent.persistentId == 2) {
+				
+				Log.i(TAG, "Recent ID:" + recent.persistentId);
+				Log.i(TAG, "Previous Id:" + previous.persistentId);
+				
+				if(recent.persistentId == 3) {
 					if(previousStatus == SystemStatus.INAPP) {
 						previousStatus = SystemStatus.MAINM;
 						recentTaskListPrevious = recentTaskList;
