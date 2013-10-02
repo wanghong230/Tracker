@@ -1,5 +1,9 @@
 package com.example.tracker;
 
+import java.util.ArrayList;
+
+import com.example.tracker.communication.TestClient;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +28,7 @@ public class ScreenReceiver extends BroadcastReceiver {
 			/** Send aggregated messages to server here */
 			Log.w(TAG, AggregateMessages.getMessages());
 			AggregateMessages.cleanMessages();
+			
 		} else if(arg1.getAction().equals(Intent.ACTION_USER_PRESENT)) {
 			isScreenOn = true;
 			isUserPresent = true;

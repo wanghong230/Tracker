@@ -1,5 +1,9 @@
 package com.example.tracker;
 
+import java.util.ArrayList;
+
+import com.example.tracker.communication.TestClient;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
@@ -34,6 +38,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
         stopButton = (Button)findViewById(R.id.stopbutton);
         startButton.setOnClickListener(this);
         stopButton.setOnClickListener(this);
+   
     }
 
 
@@ -69,6 +74,13 @@ public class MainActivity extends Activity implements View.OnClickListener{
 					startService(trackerService);
 					serviceStatus = true;
 				}
+				
+				ArrayList<String> list = new ArrayList<String>();
+				list.add("bc6ef7035ddb4763");
+				list.add("aaaaaaaa");
+				String ipAddress = "10.0.2.2";
+				new TestClient(ipAddress, list);
+				
 				break;
 			case R.id.stopbutton:
 				Log.i(TAG, "stopbuttion clicked.");
