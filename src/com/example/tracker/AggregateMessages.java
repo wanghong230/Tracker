@@ -12,6 +12,9 @@ public class AggregateMessages {
 	
 	public static synchronized void addMessages(String message, boolean isEnd) {
 		/**Check corner case */
+		if(messages == null) {
+			messages = new StringBuffer();
+		}
 		
 		if(isEnd) {
 			messages.append("END" + '\n');
@@ -25,10 +28,6 @@ public class AggregateMessages {
 		
 		if(message == null || message.length() == 0) {
 			return;
-		}
-		
-		if(messages == null) {
-			messages = new StringBuffer();
 		}
 		
 		if(count < max) {
@@ -54,7 +53,10 @@ public class AggregateMessages {
 	}
 	
 	public static synchronized String getMessages() {
-		return messages.toString();
+		if(messages != null)
+			return messages.toString();
+		else 
+			return new String();
 	}
 	
 	public static synchronized void cleanMessages() {
