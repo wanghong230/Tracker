@@ -196,7 +196,7 @@ public class TrackerService extends Service implements OnTouchListener{
 				Log.i(TAG, "Recent ID:" + recent.persistentId);
 				Log.i(TAG, "Previous Id:" + previous.persistentId);
 				
-				if(recent.persistentId == 3) {
+				if(recent.persistentId <= 3) {
 					if(previousStatus == SystemStatus.INAPP) {
 						previousStatus = SystemStatus.MAINM;
 						recentTaskListPrevious = recentTaskList;
