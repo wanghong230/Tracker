@@ -99,6 +99,10 @@ public class TrackerService extends Service implements OnTouchListener{
 		 * 			2.User Present: phone unlocked.
 		 */
 		
+		if(intent == null) {
+			return super.onStartCommand(intent, flags, startId);
+		}
+		
 		isScreenOn = intent.getBooleanExtra("isScreenOn", true);
 		isUserPresent = intent.getBooleanExtra("isUserPresent", true);
 		
