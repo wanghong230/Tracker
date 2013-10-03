@@ -1,11 +1,12 @@
 package com.example.tracker;
 
 import java.util.ArrayList;
-
 import Client.TestClient;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.provider.Settings.Secure;
 import android.util.Log;
 
 public class ScreenReceiver extends BroadcastReceiver {
@@ -21,14 +22,13 @@ public class ScreenReceiver extends BroadcastReceiver {
 		// TODO Auto-generated method stub
 		if(arg1.getAction().equals(Intent.ACTION_SCREEN_ON)) {
 			isScreenOn = true;
+			AggregateMessages.cleanMessages();
 		} else if (arg1.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
 			isScreenOn = false;
 			isUserPresent = false;
-			AggregateMessages.addMessages("Screen is off!");
-			/** Send aggregated messages to server here */
 			Log.w(TAG, AggregateMessages.getMessages());
-			AggregateMessages.cleanMessages();
-			
+			AggregateMessages.addMessages(null, true);
+			/** Send aggregated messages to server here */	
 		} else if(arg1.getAction().equals(Intent.ACTION_USER_PRESENT)) {
 			isScreenOn = true;
 			isUserPresent = true;
@@ -40,6 +40,5 @@ public class ScreenReceiver extends BroadcastReceiver {
 		trackerService.putExtra("isScreenOn", isScreenOn);
 		trackerService.putExtra("isUserPresent", isUserPresent);
 		arg0.startService(trackerService);
-		TestClient client = new TestClient();
 	}
 }

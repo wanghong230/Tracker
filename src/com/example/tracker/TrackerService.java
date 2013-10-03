@@ -28,7 +28,7 @@ import android.provider.Settings.Secure;
 public class TrackerService extends Service implements OnTouchListener{
 
 	private String TAG = this.getClass().getSimpleName();
-	private String deviceID = null;
+	public static String deviceID = null;
 	private BroadcastReceiver receiver = null;
 	private boolean isScreenOn = false;
 	
@@ -112,8 +112,8 @@ public class TrackerService extends Service implements OnTouchListener{
 		
 		if(isUserPresent) {
 			Log.i(TAG, "User is present!");
-			AggregateMessages.addMessages(deviceID);
-			AggregateMessages.addMessages("User is present!");
+//			AggregateMessages.addMessages(deviceID);
+			AggregateMessages.addMessages("START", false);
 			/** Start the tracking */
 		} else {
 			Log.i(TAG, "User not present!");
@@ -157,7 +157,7 @@ public class TrackerService extends Service implements OnTouchListener{
 		        	 SystemStatus status = trackStatus();
 		        	 Log.i(TAG, "Recorded Touch Outside the view.");
 		        	 Log.i(TAG, "TimeStamp: " + System.nanoTime() + "  Sys_Status:" + status); 
-		        	 AggregateMessages.addMessages("TimeStamp: " + System.nanoTime() + "  Sys_Status:" + status);
+		        	 AggregateMessages.addMessages("TimeStamp: " + System.nanoTime() + "  Sys_Status:" + status, false);
 		         } 
 		    }, 1000); 
 		}
