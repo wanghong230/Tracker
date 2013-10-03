@@ -1,5 +1,6 @@
 package com.example.tracker;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import android.app.Service;
@@ -27,6 +28,11 @@ import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 
 import android.provider.Settings.Secure;
+
+import java.util.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class TrackerService extends Service implements OnTouchListener{
 
@@ -121,9 +127,12 @@ public class TrackerService extends Service implements OnTouchListener{
 		}
 		
 		if(isUserPresent) {
+			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss z");
+			Calendar cal = Calendar.getInstance();
+			
 			Log.i(TAG, "User is present!");
 			AggregateMessages.cleanMessages();
-			AggregateMessages.addMessages("START", false, isOnline());
+			AggregateMessages.addMessages("START " + dateFormat.format(cal.getTime()), false, isOnline());
 			/** Start the tracking */
 		} else {
 			Log.i(TAG, "User not present!");

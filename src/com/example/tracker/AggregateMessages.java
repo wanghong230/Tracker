@@ -1,5 +1,9 @@
 package com.example.tracker;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import Client.TestClient;
 
 public class AggregateMessages {
@@ -18,7 +22,10 @@ public class AggregateMessages {
 		
 		if(isEnd && message == null) {
 			if(isOnline && count != 0) {
-				messages.append("END" + '\n');
+				DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss z");
+				Calendar cal = Calendar.getInstance();
+				
+				messages.append("END "+ dateFormat.format(cal.getTime()) + '\n');
 				String[] messages = new String[2];
 				messages[0] = TrackerService.deviceID;
 				messages[1] = AggregateMessages.getMessages();
