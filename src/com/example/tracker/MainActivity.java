@@ -9,12 +9,17 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PixelFormat;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.LinearLayout.LayoutParams;
 
 public class MainActivity extends Activity implements View.OnClickListener{
 
@@ -23,6 +28,9 @@ public class MainActivity extends Activity implements View.OnClickListener{
 	private Button startButton = null;
 	private Button stopButton = null;
 	private TextView status = null;
+//	private LinearLayout fakeLayout = null;
+//	private WindowManager mWindowManager = null;
+//	private WindowManager.LayoutParams params = null;
 	
 	/** Flag to track the service status */
 	private boolean serviceStatus = false;
@@ -44,6 +52,28 @@ public class MainActivity extends Activity implements View.OnClickListener{
         startButton.setOnClickListener(this);
         stopButton.setOnClickListener(this);
         status.setText("Stopped!");
+        
+//		/** Create and configure the fake layout for service */
+//		if(fakeLayout == null) {
+//			fakeLayout = new LinearLayout(this);
+//			LayoutParams layoutPrams = new LayoutParams(400, LayoutParams.MATCH_PARENT);
+//			fakeLayout.setLayoutParams(layoutPrams);
+//		}
+//		
+//		/** Fetch WindowManager and add fake layout to it */
+//		if(mWindowManager == null) {
+//			mWindowManager = (WindowManager)getSystemService(WINDOW_SERVICE);
+//		}
+//		
+//		if(params == null) {
+//			params = new WindowManager.LayoutParams(
+//					400,
+//					WindowManager.LayoutParams.MATCH_PARENT,
+//					WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
+//					WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH,
+//	                PixelFormat.TRANSLUCENT);
+//			params.gravity = Gravity.LEFT | Gravity.TOP;
+//		}
    
     }
 
@@ -60,6 +90,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		/** Ensure stop the trackerService */
+//		mWindowManager.removeView(fakeLayout);
 		stopService(trackerService);
 		super.onDestroy();
 	}
@@ -77,13 +108,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 					serviceStatus = true;
 				}
 				status.setText("Started!");
-				
-//				ArrayList<String> list = new ArrayList<String>();
-//				list.add("bc6ef7035ddb4763");
-//				list.add("aaaaaaaa");
-//				String ipAddress = "10.0.2.2";
-//				new TestClient(ipAddress, list);
-				
+//				mWindowManager.addView(fakeLayout, params);			
 				break;
 			case R.id.stopbutton:
 				Log.i(TAG, "stopbuttion clicked.");
@@ -93,6 +118,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 					serviceStatus = false;
 				}
 				status.setText("Stopped!");
+//				mWindowManager.removeView(fakeLayout);
 				break;
 			default:
 					break;
