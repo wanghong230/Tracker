@@ -32,4 +32,14 @@
         android:layout_marginTop="17dp"
         android:text="Stop TrackerService" />
 
+    <TextView
+        android:id="@+id/status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/stopbutton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="97dp"
+        android:text="Service Stopped!"
+        android:textSize="20sp" />
+
 </RelativeLayout>

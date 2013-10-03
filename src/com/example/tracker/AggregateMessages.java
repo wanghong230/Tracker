@@ -16,9 +16,9 @@ public class AggregateMessages {
 			messages = new StringBuffer();
 		}
 		
-		if(isEnd) {
-			messages.append("END" + '\n');
-			if(isOnline) {
+		if(isEnd && message == null) {
+			if(isOnline && messages.length() != 0) {
+				messages.append("END" + '\n');
 				String[] messages = new String[2];
 				messages[0] = TrackerService.deviceID;
 				messages[1] = AggregateMessages.getMessages();

@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.TextView;
 
 public class MainActivity extends Activity implements View.OnClickListener{
 
@@ -21,6 +22,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 	private Intent trackerService = null;
 	private Button startButton = null;
 	private Button stopButton = null;
+	private TextView status = null;
 	
 	/** Flag to track the service status */
 	private boolean serviceStatus = false;
@@ -38,8 +40,10 @@ public class MainActivity extends Activity implements View.OnClickListener{
         /** Bind the button listener here */
         startButton = (Button)findViewById(R.id.startbutton);
         stopButton = (Button)findViewById(R.id.stopbutton);
+        status = (TextView)findViewById(R.id.status);
         startButton.setOnClickListener(this);
         stopButton.setOnClickListener(this);
+        status.setText("Stopped!");
    
     }
 
@@ -72,6 +76,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 					startService(trackerService);
 					serviceStatus = true;
 				}
+				status.setText("Started!");
 				
 //				ArrayList<String> list = new ArrayList<String>();
 //				list.add("bc6ef7035ddb4763");
@@ -87,6 +92,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 					stopService(trackerService);
 					serviceStatus = false;
 				}
+				status.setText("Stopped!");
 				break;
 			default:
 					break;
