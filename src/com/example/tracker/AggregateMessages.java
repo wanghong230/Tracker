@@ -10,7 +10,7 @@ public class AggregateMessages {
 	public static final int max = 200;
 	public static final int maxPerPackage = 20;
 	
-	public static synchronized void addMessages(String message, boolean isEnd) {
+	public static synchronized void addMessages(String message, boolean isEnd, boolean isOnline) {
 		/**Check corner case */
 		if(messages == null) {
 			messages = new StringBuffer();
@@ -18,10 +18,12 @@ public class AggregateMessages {
 		
 		if(isEnd) {
 			messages.append("END" + '\n');
-			String[] messages = new String[2];
-			messages[0] = TrackerService.deviceID;
-			messages[1] = AggregateMessages.getMessages();
-			TestClient client = new TestClient("209.129.244.6", messages);
+			if(isOnline) {
+				String[] messages = new String[2];
+				messages[0] = TrackerService.deviceID;
+				messages[1] = AggregateMessages.getMessages();
+				TestClient client = new TestClient("209.129.244.6", messages);
+			}
 			cleanMessages();
 			return;		
 		}
@@ -37,10 +39,12 @@ public class AggregateMessages {
 		}
 		
 		if(packageCount > maxPerPackage) {
-			String[] messages = new String[2];
-			messages[0] = TrackerService.deviceID;
-			messages[1] = AggregateMessages.getMessages();
-			TestClient client = new TestClient("209.129.244.6", messages);
+			if(isOnline) {
+				String[] messages = new String[2];
+				messages[0] = TrackerService.deviceID;
+				messages[1] = AggregateMessages.getMessages();
+				TestClient client = new TestClient("209.129.244.6", messages);
+			}
 			cleanMessagesNoTouchCount();
 			return;			
 		}

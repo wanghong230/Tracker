@@ -4,9 +4,12 @@ import java.util.List;
 
 import android.app.Service;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
+import android.content.Context;
 import android.content.IntentFilter;
 import android.content.BroadcastReceiver;
 
@@ -109,15 +112,18 @@ public class TrackerService extends Service implements OnTouchListener{
 		
 		if(isScreenOn) {
 			Log.i(TAG, "Screen is on!");
+			AggregateMessages.cleanMessages();
 //			AggregateMessages.addMessages("Screen is on!");
 		} else {
 			Log.i(TAG, "Screen is off!");
+			Log.w(TAG, AggregateMessages.getMessages());
+			AggregateMessages.addMessages(null, true, isOnline());
 		}
 		
 		if(isUserPresent) {
 			Log.i(TAG, "User is present!");
-//			AggregateMessages.addMessages(deviceID);
-			AggregateMessages.addMessages("START", false);
+			AggregateMessages.cleanMessages();
+			AggregateMessages.addMessages("START", false, isOnline());
 			/** Start the tracking */
 		} else {
 			Log.i(TAG, "User not present!");
@@ -161,7 +167,7 @@ public class TrackerService extends Service implements OnTouchListener{
 		        	 SystemStatus status = trackStatus();
 		        	 Log.i(TAG, "Recorded Touch Outside the view.");
 		        	 Log.i(TAG, "TimeStamp: " + System.nanoTime() + "  Sys_Status:" + status); 
-		        	 AggregateMessages.addMessages("TimeStamp: " + System.nanoTime() + "  Sys_Status:" + status, false);
+		        	 AggregateMessages.addMessages("TimeStamp: " + System.nanoTime() + "  Sys_Status:" + status, false, isOnline());
 		         } 
 		    }, 1000); 
 		}
@@ -225,5 +231,15 @@ public class TrackerService extends Service implements OnTouchListener{
 	public void updateRecentTaskListPrevious() {
 		ActivityManager actvityManager = (ActivityManager) this.getSystemService( ACTIVITY_SERVICE );
 		recentTaskListPrevious = actvityManager.getRecentTasks(5, ActivityManager.RECENT_IGNORE_UNAVAILABLE);		
+	}
+	
+	private boolean isOnline() {
+	    ConnectivityManager cm =
+	        (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+	    NetworkInfo netInfo = cm.getActiveNetworkInfo();
+	    if (netInfo != null && netInfo.isConnected()) {
+	        return true;
+	    }
+	    return false;
 	}
 }
