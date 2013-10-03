@@ -1,8 +1,7 @@
 package com.example.tracker;
 
 import java.util.ArrayList;
-
-import com.example.tracker.communication.TestClient;
+import Client.TestClient;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -88,6 +87,6 @@ public class MainActivity extends Activity implements View.OnClickListener{
 				break;
 			default:
 					break;
-		}		
+		}	
 	}
 }

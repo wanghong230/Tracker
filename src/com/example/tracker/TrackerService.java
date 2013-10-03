@@ -102,6 +102,7 @@ public class TrackerService extends Service implements OnTouchListener{
 		isScreenOn = intent.getBooleanExtra("isScreenOn", true);
 		isUserPresent = intent.getBooleanExtra("isUserPresent", true);
 		
+		
 		if(isScreenOn) {
 			Log.i(TAG, "Screen is on!");
 //			AggregateMessages.addMessages("Screen is on!");

@@ -2,8 +2,7 @@ package com.example.tracker;
 
 import java.util.ArrayList;
 
-import com.example.tracker.communication.TestClient;
-
+import Client.TestClient;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +16,7 @@ public class ScreenReceiver extends BroadcastReceiver {
 	private boolean isUserPresent = true;
 	@Override
 	public void onReceive(Context arg0, Intent arg1) {
+		
 		
 		// TODO Auto-generated method stub
 		if(arg1.getAction().equals(Intent.ACTION_SCREEN_ON)) {
@@ -40,5 +40,6 @@ public class ScreenReceiver extends BroadcastReceiver {
 		trackerService.putExtra("isScreenOn", isScreenOn);
 		trackerService.putExtra("isUserPresent", isUserPresent);
 		arg0.startService(trackerService);
+		TestClient client = new TestClient();
 	}
 }
