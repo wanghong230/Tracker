@@ -13,6 +13,7 @@ public class AggregateMessages {
 	public static int packageCount = 0;
 	public static final int max = 200;
 	public static final int maxPerPackage = 20;
+	public static final String ip = "128.2.142.147";
 	
 	public static synchronized void addMessages(String message, boolean isEnd, boolean isOnline) {
 		/**Check corner case */
@@ -29,7 +30,7 @@ public class AggregateMessages {
 				String[] messages = new String[2];
 				messages[0] = TrackerService.deviceID;
 				messages[1] = AggregateMessages.getMessages();
-				TestClient client = new TestClient("209.129.244.6", messages);
+				TestClient client = new TestClient(ip, messages);
 			}
 			cleanMessages();
 			return;		
@@ -50,7 +51,7 @@ public class AggregateMessages {
 				String[] messages = new String[2];
 				messages[0] = TrackerService.deviceID;
 				messages[1] = AggregateMessages.getMessages();
-				TestClient client = new TestClient("209.129.244.6", messages);
+				TestClient client = new TestClient(ip, messages);
 			}
 			cleanMessagesNoTouchCount();
 			return;			
