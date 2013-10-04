@@ -1,7 +1,7 @@
 package com.example.tracker;
 
 import java.util.ArrayList;
-import Client.TestClient;
+import com.trackerserver.client.TestClient;
 
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;

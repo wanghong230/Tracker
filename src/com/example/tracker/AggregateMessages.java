@@ -4,7 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import Client.TestClient;
+import com.trackerserver.client.TestClient;
 
 public class AggregateMessages {
 	

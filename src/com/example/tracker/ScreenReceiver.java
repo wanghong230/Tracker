@@ -1,15 +1,8 @@
 package com.example.tracker;
 
-import java.util.ArrayList;
-import Client.TestClient;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.provider.Settings.Secure;
-import android.util.Log;
 
 public class ScreenReceiver extends BroadcastReceiver {
 	
