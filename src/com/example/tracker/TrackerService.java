@@ -40,6 +40,7 @@ public class TrackerService extends Service implements OnTouchListener{
 	public static String deviceID = null;
 	private BroadcastReceiver receiver = null;
 	private boolean isScreenOn = false;
+	private boolean isOwner = true;
 	
 	private LinearLayout fakeLayout;
 	private WindowManager mWindowManager;
@@ -111,7 +112,7 @@ public class TrackerService extends Service implements OnTouchListener{
 		if(intent == null) {
 			return super.onStartCommand(intent, flags, startId);
 		}
-		
+		isOwner = MainActivity.isOwner;
 		isScreenOn = intent.getBooleanExtra("isScreenOn", true);
 		isUserPresent = intent.getBooleanExtra("isUserPresent", true);
 		
@@ -133,6 +134,7 @@ public class TrackerService extends Service implements OnTouchListener{
 			Log.i(TAG, "User is present!");
 			AggregateMessages.cleanMessages();
 			AggregateMessages.addMessages("START " + dateFormat.format(cal.getTime()), false, isOnline());
+			AggregateMessages.addMessages("OWNER:" + Boolean.toString(isOwner), false, isOnline());
 			/** Start the tracking */
 		} else {
 			Log.i(TAG, "User not present!");

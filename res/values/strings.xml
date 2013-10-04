@@ -4,5 +4,7 @@
     <string name="app_name">Tracker</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello Tracker!</string>
+    <string name="switch_yes">YES</string>
+    <string name="switch_no">NO</string>
 
 </resources>

@@ -19,6 +19,8 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import 	android.widget.Switch;
+import android.widget.CheckBox;
 import android.widget.LinearLayout.LayoutParams;
 
 public class MainActivity extends Activity implements View.OnClickListener{
@@ -28,6 +30,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
 	private Button startButton = null;
 	private Button stopButton = null;
 	private TextView status = null;
+	private CheckBox ownerCheckBox = null;
+	public static boolean isOwner = true;
 //	private LinearLayout fakeLayout = null;
 //	private WindowManager mWindowManager = null;
 //	private WindowManager.LayoutParams params = null;
@@ -49,9 +53,12 @@ public class MainActivity extends Activity implements View.OnClickListener{
         startButton = (Button)findViewById(R.id.startbutton);
         stopButton = (Button)findViewById(R.id.stopbutton);
         status = (TextView)findViewById(R.id.status);
+        ownerCheckBox = (CheckBox)findViewById(R.id.checkBox1);
         startButton.setOnClickListener(this);
         stopButton.setOnClickListener(this);
         status.setText("Stopped!");
+        ownerCheckBox.setChecked(true);
+        isOwner = true;
         
 //		/** Create and configure the fake layout for service */
 //		if(fakeLayout == null) {
@@ -104,9 +111,11 @@ public class MainActivity extends Activity implements View.OnClickListener{
 				Log.i(TAG, "startbutton clicked.");
 				/** Start the trackerService */
 				if(serviceStatus == false) {
+					isOwner = ownerCheckBox.isChecked();
 					startService(trackerService);
 					serviceStatus = true;
 				}
+				ownerCheckBox.setClickable(false);
 				status.setText("Started!");
 //				mWindowManager.addView(fakeLayout, params);			
 				break;
@@ -117,6 +126,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 					stopService(trackerService);
 					serviceStatus = false;
 				}
+				ownerCheckBox.setClickable(true);
 				status.setText("Stopped!");
 //				mWindowManager.removeView(fakeLayout);
 				break;
